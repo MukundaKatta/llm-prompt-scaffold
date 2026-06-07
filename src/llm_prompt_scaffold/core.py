@@ -200,11 +200,7 @@ class PromptScaffold:
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-serialisable representation."""
-        return {
-            sec.value: self.get(sec)
-            for sec in _RENDER_ORDER
-            if self._blocks[sec]
-        }
+        return {sec.value: self.get(sec) for sec in _RENDER_ORDER if self._blocks[sec]}
 
     @classmethod
     def from_dict(cls, data: dict[str, str]) -> PromptScaffold:

@@ -320,6 +320,29 @@ def test_from_dict_ignores_empty_values():
     assert s.get(PromptSection.INSTRUCTION) == "do it"
 
 
+def test_to_dict_joins_appended_blocks():
+    s = PromptScaffold()
+    s.append(PromptSection.EXAMPLES, "one")
+    s.append(PromptSection.EXAMPLES, "two")
+    assert s.to_dict()["examples"] == "one\n\ntwo"
+
+
+def test_from_dict_roundtrip_preserves_appended_blocks():
+    s = PromptScaffold()
+    s.append(PromptSection.EXAMPLES, "one")
+    s.append(PromptSection.EXAMPLES, "two")
+    s2 = PromptScaffold.from_dict(s.to_dict())
+    assert s2.get(PromptSection.EXAMPLES) == s.get(PromptSection.EXAMPLES)
+
+
+def test_to_dict_keys_in_render_order():
+    s = PromptScaffold()
+    s.set(PromptSection.INSTRUCTION, "do it")
+    s.set(PromptSection.SYSTEM, "be helpful")
+    keys = list(s.to_dict().keys())
+    assert keys.index("system") < keys.index("instruction")
+
+
 # ---------------------------------------------------------------------------
 # PromptScaffold — chaining
 # ---------------------------------------------------------------------------
